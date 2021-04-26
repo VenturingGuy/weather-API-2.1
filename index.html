@@ -20,6 +20,11 @@
         margin: 0 0 1rem 0;
       }
 
+      #feels-like {
+        font-size: 0.9em;
+        font-weight: bold;
+      }
+
       .container {
         width: 400px;
         display: flex;
@@ -56,54 +61,82 @@
   </head>
   <body>
     <div class="container">
-      <h1 id="temp">
-        <!--Temp -->
-      </h1>
-      <p id="desc">
-        <!-- description -->
-      </p>
+      <h1 id="temp"><!--Temp --></h1>
+      <p id="feels-like"><!-- feels like --></p>
+      <p id="desc"><!-- description --></p>
+      <p id="humidity"><!-- humidity --></p>
+      <p id="temp_min"><!-- minimum temp --></p>
+      <p id="temp_max"><!-- maximum temp --></p>
       <form id="form">
         <input 
           id="zip" 
           type="number" 
           placeholder="zip code"
-          title="Please Enter a valid Zip Code"
+          title="Please Enter a Valid Zip Code"
           pattern="^\d{5}(?:[-\s]\d{4})?$"
+        >
+        <input 
+          id="city" 
+          type="text" 
+          placeholder="city name"
+          title="Please Enter a Valid City name"
         >
         <button type="submit">Search</button>
       </form>
     </div>
 
-    <script>
+    <script type="module">
+      import { getWeatherByZip, getWeatherByCity, getWeatherByGeo } from './src/index.js'
       // ------------------------------------------------------
       // Developer Code
 
       // Get Element refererences
       const tempEl = document.getElementById('temp')
       const descEl = document.getElementById('desc')
+      const feelsEl = document.getElementById('feels-like')
       const formEl = document.getElementById('form')
+      const humidityEl = document.getElementById('humidity')
+      const minEl = document.getElementById('temp_min')
+      const maxEl = document.getElementById('temp_max')
       const zipInput = document.getElementById('zip')
+      const cityInput = document.getElementById('city')
 
       // Define event listeners
-      formEl.addEventListener('submit', (e) => {
+      /*formEl.addEventListener('submit', (e) => {
         e.preventDefault()
         const zip = zipInput.value
-        getWeather(zip)
+        const apiKey = '4ba12c9a302f7b701a2e7ac9e635722e'
+        const units = 'imperial'
+
+        getWeatherByZip(zip, apiKey, units)
+        .then((data) => {
+          tempEl.innerHTML = data.temp
+          descEl.innerHTML = data.description
+          feelsEl.innerHTML = `Feels like ${data.feelsLike}`
+          humidityEl.innerHTML = `Humidity: ${data.humidity}`
+          maxEl.innerHTML = `Max: ${data.temp_max}`
+          minEl.innerHTML = `Min: ${data.temp_min}`
+        }).catch(err => console.log(err.message))
+      })*/
+
+      formEl.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const city = cityInput.value
+        const apiKey = '4ba12c9a302f7b701a2e7ac9e635722e'
+        const units = 'imperial'
+
+        getWeatherByCity(city, apiKey, units)
+        .then((data) => {
+          tempEl.innerHTML = data.temp
+          descEl.innerHTML = data.description
+          feelsEl.innerHTML = `Feels like ${data.feelsLike}`
+          humidityEl.innerHTML = `Humidity: ${data.humidity}`
+          maxEl.innerHTML = `Max: ${data.temp_max}`
+          minEl.innerHTML = `Min: ${data.temp_min}`
+        }).catch(err => console.log(err.message))
       })
 
-      // Functions 
-    function getWeather(zip) {
-        const apiKey = '467355df4c808dd6134a3b64e9ace282'
-        const units = 'imperial'
-        const path = `https://api.openweathermap.org/data/2.5/weather?zip=${zip}&appid=${apiKey}&units=${units}`
-        fetch(path)
-          .then(res => res.json())
-          .then(json => {
-            tempEl.innerHTML = json.main.temp
-            descEl.innerHTML = json.weather[0].description
-          })
-          .catch(err => console.log(err.message))
-      }
+    
            
     </script>
   </body>
